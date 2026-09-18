@@ -1,0 +1,16 @@
+{
+  "name": "pandenik-certificate-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "سازنده گواهینامه چندزبانه — هنرجو و مدرس به‌صورت متغیر",
+  "scripts": {
+    "start": "npx --yes serve -l 8765 .",
+    "serve": "npx --yes serve -l 8765 ."
+  },
+  "keywords": [
+    "certificate",
+    "pandenik",
+    "studio"
+  ],
+  "license": "MIT"
+}

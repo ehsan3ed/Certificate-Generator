@@ -1,0 +1,24 @@
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+node_modules/
+__pycache__/
+*.pyc
+assets/_theme_source_bak/
+assets/_debug_mask.png
+tools/_new_themes_snippet.js
+tools/__pycache__/
+certificate-studio-deploy/
+*.zip
+New Text Document.txt
+1Ms.-Fatemeh-Taghipour.png
+C.LOGO.png
+*.local
+.env
+.env.*
+!/.env.example
+
+_local-samples/
+

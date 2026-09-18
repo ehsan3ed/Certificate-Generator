@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1c2b4a">
+  <meta name="description" content="سازنده گواهینامه — چندزبانه، RTL/LTR، لوگو و عکس">
+  <title>سازنده گواهینامه | Certificate Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Great+Vibes&family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;700&family=Playfair+Display:wght@600;700&family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <main class="editor-shell">
+    <div class="layout">
+      <aside class="editor-panel no-print">
+        <p class="panel-kicker">CERTIFICATE STUDIO</p>
+        <h1 class="panel-title">سازنده گواهینامه</h1>
+        <p class="panel-desc">
+          طرح، زبان، راست‌چین/چپ‌چین، فونت، لوگو، عکس هنرجو/مدرس و متن‌ها را تنظیم کنید.
+        </p>
+
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab-btn active" data-tab="themes">طرح‌ها</button>
+          <button type="button" class="tab-btn" data-tab="lang">زبان/فونت</button>
+          <button type="button" class="tab-btn" data-tab="main">متن</button>
+          <button type="button" class="tab-btn" data-tab="media">لوگو/عکس</button>
+          <button type="button" class="tab-btn" data-tab="layers">لایه‌ها</button>
+          <button type="button" class="tab-btn" data-tab="style">پس‌زمینه</button>
+          <button type="button" class="tab-btn" data-tab="icons">آیکون</button>
+        </div>
+
+        <form id="certificate-form" novalidate>
+          <div id="tab-themes" class="tab-panel active">
+            <p class="section-note">۲۳ طرح آماده خالی (بدون متن و QR). با انتخاب هر طرح، قاب و رنگ‌ها اعمال می‌شود.</p>
+            <div id="theme-gallery" class="theme-gallery"></div>
+          </div>
+
+          <div id="tab-lang" class="tab-panel">
+            <div class="field">
+              <label>زبان متن گواهینامه</label>
+              <div id="language-chips" class="chip-row"></div>
+              <select id="language" class="editor-input sr-only" aria-hidden="true"></select>
+            </div>
+            <div class="field">
+              <label>جهت نوشتار</label>
+              <div id="direction-chips" class="chip-row">
+                <button type="button" class="chip-btn" data-dir="ltr">چپ‌چین LTR</button>
+                <button type="button" class="chip-btn" data-dir="rtl">راست‌چین RTL</button>
+              </div>
+              <select id="direction" class="editor-input sr-only" aria-hidden="true">
+                <option value="ltr">چپ‌چین (LTR)</option>
+                <option value="rtl">راست‌چین (RTL)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>بسته فونت</label>
+              <div id="font-chips" class="font-chip-grid"></div>
+              <select id="font-pack" class="editor-input sr-only" aria-hidden="true"></select>
+            </div>
+            <p class="section-note">با تغییر زبان، متن‌های پیش‌فرض جایگزین می‌شوند؛ نام‌ها و لوگوها حفظ می‌مانند.</p>
+          </div>
+
+          <div id="tab-main" class="tab-panel">
+            <div class="field">
+              <label for="title">عنوان گواهینامه</label>
+              <input id="title" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="recipient-name">نام هنرجو</label>
+              <input id="recipient-name" class="editor-input" type="text" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="recipient-phone">شماره تماس هنرجو</label>
+              <input id="recipient-phone" class="editor-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="09121234567" dir="ltr">
+              <p class="hint">مثال: 09121234567 — ارقام فارسی هم پذیرفته می‌شود. شماره روی تصویر چاپ نمی‌شود.</p>
+            </div>
+            <div class="btn-row tight" style="margin-bottom:0.85rem">
+              <button id="save-recipient-button" class="btn btn-secondary" type="button">ذخیره اطلاعات هنرجو</button>
+            </div>
+            <p id="recipient-save-status" class="hint" aria-live="polite"></p>
+            <div class="field">
+              <label for="instructor-name">نام مدرس</label>
+              <input id="instructor-name" class="editor-input" type="text" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="institution-name">نام موسسه</label>
+              <input id="institution-name" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="course-date">تاریخ دوره</label>
+              <input id="course-date" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="course-name">نام دوره</label>
+              <input id="course-name" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="duration">مدت دوره</label>
+              <input id="duration" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="intro-text">متن معرفی</label>
+              <textarea id="intro-text" class="editor-textarea"></textarea>
+            </div>
+            <div class="field">
+              <label for="description-one">توضیح اول</label>
+              <textarea id="description-one" class="editor-textarea"></textarea>
+            </div>
+            <div class="field">
+              <label for="description-two">توضیح دوم</label>
+              <textarea id="description-two" class="editor-textarea"></textarea>
+            </div>
+            <div class="field">
+              <label for="signature-caption-input">عنوان امضا</label>
+              <input id="signature-caption-input" class="editor-input" type="text">
+            </div>
+            <div class="field">
+              <label for="qr-notice-input">یادداشت QR</label>
+              <input id="qr-notice-input" class="editor-input" type="text">
+            </div>
+          </div>
+
+          <div id="tab-media" class="tab-panel">
+            <div class="field">
+              <label for="logo-file">لوگوی اختصاصی کاربر (بالای گواهینامه)</label>
+              <div class="drop-zone" id="logo-drop-zone">
+                <p>لوگوی خود را اینجا رها کنید یا انتخاب کنید</p>
+                <input id="logo-file" type="file" accept="image/*">
+              </div>
+              <div class="btn-row tight">
+                <button id="remove-logo" class="btn btn-danger" type="button">حذف لوگوی انتخاب‌شده</button>
+                <button id="hide-logo-seal" class="btn btn-ghost" type="button">حذف کامل نشان پیش‌فرض</button>
+                <button id="show-logo-seal" class="btn btn-ghost" type="button">برگرداندن نشان پیش‌فرض</button>
+              </div>
+              <p class="hint">اگر لوگو را اشتباه انتخاب کردید، «حذف لوگوی انتخاب‌شده» را بزنید. برای برداشتن کامل نشان طلایی پیش‌فرض، دکمه حذف کامل را بزنید.</p>
+            </div>
+
+            <div class="control-card">
+              <h3>موقعیت و اندازه لوگوی کاربر</h3>
+              <label class="range-label">افقی <span id="logo-x-val"></span></label>
+              <input id="logo-x" class="range" type="range" min="40" max="1000" step="1">
+              <label class="range-label">عمودی <span id="logo-y-val"></span></label>
+              <input id="logo-y" class="range" type="range" min="40" max="650" step="1">
+              <label class="range-label">اندازه <span id="logo-size-val"></span></label>
+              <input id="logo-size" class="range" type="range" min="40" max="180" step="1">
+            </div>
+
+            <div class="control-card">
+              <h3>تصویر محو بزرگ پس‌زمینه (اختیاری)</h3>
+              <p class="hint">جدا از لوگوی سایت؛ می‌توانید تصویر دلخواه خود را به‌صورت بزرگ و محو روی ورق بگذارید.</p>
+              <label class="check-row">
+                <input id="watermark-enabled" type="checkbox">
+                نمایش تصویر محو سفارشی
+              </label>
+              <div class="drop-zone" id="bg-image-drop-zone">
+                <p>تصویر پس‌زمینه را رها کنید</p>
+                <input id="bg-image-file" type="file" accept="image/*">
+              </div>
+              <button id="remove-bg-image" class="btn btn-ghost" type="button" style="margin-top:0.45rem">حذف تصویر پس‌زمینه</button>
+              <label class="range-label">شفافیت <span id="watermark-opacity-val"></span></label>
+              <input id="watermark-opacity" class="range" type="range" min="0.02" max="0.35" step="0.01">
+              <label class="range-label">اندازه <span id="watermark-size-val"></span></label>
+              <input id="watermark-size" class="range" type="range" min="180" max="700" step="10">
+            </div>
+
+            <div class="control-card">
+              <h3>عکس هنرجو</h3>
+              <label class="check-row">
+                <input id="student-photo-enabled" type="checkbox">
+                نمایش عکس هنرجو
+              </label>
+              <input id="student-photo-file" type="file" accept="image/*">
+              <label class="range-label">افقی <span id="student-x-val"></span></label>
+              <input id="student-x" class="range" type="range" min="40" max="1000" step="1">
+              <label class="range-label">عمودی <span id="student-y-val"></span></label>
+              <input id="student-y" class="range" type="range" min="40" max="700" step="1">
+              <label class="range-label">اندازه <span id="student-size-val"></span></label>
+              <input id="student-size" class="range" type="range" min="60" max="180" step="1">
+              <input id="student-photo-caption" class="editor-input" type="text" placeholder="عنوان زیر عکس هنرجو">
+            </div>
+
+            <div class="control-card">
+              <h3>عکس مدرس</h3>
+              <label class="check-row">
+                <input id="instructor-photo-enabled" type="checkbox">
+                نمایش عکس مدرس
+              </label>
+              <input id="instructor-photo-file" type="file" accept="image/*">
+              <label class="range-label">افقی <span id="instructor-photo-x-val"></span></label>
+              <input id="instructor-photo-x" class="range" type="range" min="40" max="1000" step="1">
+              <label class="range-label">عمودی <span id="instructor-photo-y-val"></span></label>
+              <input id="instructor-photo-y" class="range" type="range" min="40" max="700" step="1">
+              <label class="range-label">اندازه <span id="instructor-photo-size-val"></span></label>
+              <input id="instructor-photo-size" class="range" type="range" min="60" max="180" step="1">
+              <input id="instructor-photo-caption" class="editor-input" type="text" placeholder="عنوان زیر عکس مدرس">
+            </div>
+
+            <div class="control-card">
+              <h3>QR چپ — تایید اصالت گواهینامه</h3>
+              <p class="hint">
+                <strong>QR سمت چپ</strong> فقط آدرس اختصاصی گواهینامه در پندنیک است
+                (<span dir="ltr"> (/c/PN-XXXXXXXX)</span>.
+                شما فقط جا و اندازه را تنظیم می‌کنید؛ لینک را آپلود یا دستی وارد نمی‌کنید.
+                بعد از آماده شدن گواهینامه، با دکمه پایین صفحه این QR تولید و در همین محل قرار می‌گیرد.
+              </p>
+              <p class="hint">
+                <strong>QR سمت راست</strong> هویت مدرس است (کارت ویزیت دیجیتال / پروفایل شما) و برای کاربران عادی قفل است.
+                فقط ادمین سایت می‌تواند لینک QR راست را تغییر دهد.
+              </p>
+              <label for="qr-left-url">آدرس اختصاصی (فقط‌خواندنی — پس از صدور پر می‌شود)</label>
+              <input id="qr-left-url" class="editor-input" type="url" dir="ltr" readonly placeholder="https://pandenik.ir/c/PN-XXXXXXXX">
+              <p class="hint" style="color:#b45309">
+                مهم: QR چپ لینک کوتاه شماره‌دار است — مثل /card/sara/c/240 (بیس 239؛ هر گواهی جدید +1).
+                قبل از دانلود PNG/PDF حتماً «تولید QR اعتبار» را بزنید.
+              </p>
+              <label class="check-row admin-only-qr" hidden>
+                <input id="qr-left-from-page" type="checkbox" disabled>
+                (غیرفعال) آدرس صفحه استودیو مجاز نیست
+              </label>
+              <p id="qr-left-source" class="hint"></p>
+              <label class="range-label">افقی <span id="qr-left-x-val"></span></label>
+              <input id="qr-left-x" class="range" type="range" min="40" max="1000" step="1">
+              <label class="range-label">عمودی <span id="qr-left-y-val"></span></label>
+              <input id="qr-left-y" class="range" type="range" min="40" max="700" step="1">
+              <label class="range-label">اندازه (برای اسکن راحت‌تر، حداقل ۱۰۰) <span id="qr-left-size-val"></span></label>
+              <input id="qr-left-size" class="range" type="range" min="90" max="160" step="1">
+            </div>
+
+            <div class="control-card">
+              <h3>QR راست — هویت مدرس (پروفایل / کارت ویزیت)</h3>
+              <p class="hint">
+                با ورود به این بخش، لینک هویت شما از پروفایل یا کارت ویزیت دیجیتال استخراج و اینجا قرار می‌گیرد.
+                می‌توانید جا و اندازه را عوض کنید؛ تغییر لینک فقط برای ادمین مجاز است.
+              </p>
+              <label for="qr-right-url">لینک هویت مدرس</label>
+              <input id="qr-right-url" class="editor-input" type="url" dir="ltr" readonly placeholder="https://pandenik.ir/card/...">
+              <label class="range-label">افقی <span id="qr-right-x-val"></span></label>
+              <input id="qr-right-x" class="range" type="range" min="40" max="1000" step="1">
+              <label class="range-label">عمودی <span id="qr-right-y-val"></span></label>
+              <input id="qr-right-y" class="range" type="range" min="40" max="700" step="1">
+              <label class="range-label">اندازه <span id="qr-right-size-val"></span></label>
+              <input id="qr-right-size" class="range" type="range" min="90" max="160" step="1">
+            </div>
+            <button id="refresh-qr" class="btn btn-ghost" type="button">بازترسیم کیوآرکدها (همان لینک‌های قفل‌شده)</button>
+          </div>
+
+          <div id="tab-style" class="tab-panel">
+            <p class="section-note">پس‌زمینه قاب، رنگ کاغذ و حاشیه را از اینجا تغییر دهید.</p>
+            <div class="field">
+              <label>پس‌زمینه‌های آماده</label>
+              <div id="bg-presets" class="chip-row wrap"></div>
+            </div>
+            <div class="color-grid">
+              <label>رنگ قاب بیرونی <input id="color-outer" type="color"></label>
+              <label>رنگ حاشیه طلایی <input id="color-frame" type="color"></label>
+              <label>رنگ خط داخلی <input id="color-border" type="color"></label>
+              <label>رنگ عنوان <input id="color-title" type="color"></label>
+              <label>رنگ متن <input id="color-ink" type="color"></label>
+              <label>رنگ تزئینات <input id="color-flourish" type="color"></label>
+              <label>کاغذ روشن <input id="color-paper-start" type="color"></label>
+              <label>کاغذ میانی <input id="color-paper-mid" type="color"></label>
+              <label>کاغذ تیره <input id="color-paper-end" type="color"></label>
+            </div>
+            <div class="control-card">
+              <h3>حاشیه‌سازی</h3>
+              <label class="range-label">ضخامت قاب بیرونی <span id="outer-pad-val"></span></label>
+              <input id="outer-pad" class="range" type="range" min="8" max="36" step="1">
+              <label class="range-label">ضخامت نوار طلایی <span id="frame-pad-val"></span></label>
+              <input id="frame-pad" class="range" type="range" min="2" max="16" step="1">
+              <label class="range-label">ضخامت خط داخلی <span id="border-width-val"></span></label>
+              <input id="border-width" class="range" type="range" min="0" max="5" step="0.5">
+              <label class="check-row">
+                <input id="show-flourishes" type="checkbox">
+                نمایش تزئینات ساده SVG (اگر قاب طرح فعال نیست)
+              </label>
+              <label class="check-row">
+                <input id="theme-frame-enabled" type="checkbox" checked>
+                نمایش قاب و تزئینات طرح انتخاب‌شده
+              </label>
+            </div>
+          </div>
+
+          <div id="tab-layers" class="tab-panel">
+            <p class="section-note">لایه‌های ازپیش‌آماده را روشن/خاموش کنید و محل آیکون‌ها و المان‌ها را از لیست یا با کشیدن روی گواهینامه تغییر دهید.</p>
+            <div class="field">
+              <label>لایه‌های آماده</label>
+              <div id="layer-presets" class="layer-preset-list"></div>
+            </div>
+            <div class="field">
+              <label>المان‌های قابل جابه‌جایی</label>
+              <div id="layers-list" class="layers-list"></div>
+            </div>
+            <label class="check-row">
+              <input id="edit-mode" type="checkbox" checked>
+              حالت ویرایش (نمایش قاب دور المان‌ها برای درگ)
+            </label>
+          </div>
+
+          <div id="tab-icons" class="tab-panel">
+            <div class="drop-zone" id="icon-drop-zone">
+              <p>آیکون را اینجا رها کنید یا انتخاب کنید</p>
+              <input id="icon-file" type="file" accept="image/*">
+            </div>
+            <p class="hint">بعد از افزودن، روی گواهینامه بکشید یا از تب لایه‌ها اندازه/موقعیت را عوض کنید.</p>
+            <div id="icons-list" class="icons-list"></div>
+          </div>
+
+          <div class="final-issue-card no-print">
+            <h3>مرحله آخر — تولید QR اعتبار (چپ) و ثبت تصویر نهایی</h3>
+            <p class="hint">
+              ابتدا با دکمه <strong>ذخیره اطلاعات هنرجو</strong> نام و شماره را در سامانه ثبت کنید؛
+              سپس این دکمه فعال می‌شود و QR اصالت + تصویر نهایی را می‌سازد.
+            </p>
+            <p id="issue-blue-tick-note" class="hint" hidden>
+              شما تیک آبی ندارید — مشاهده آزاد است؛ صدور تا دریافت تیک آبی ممکن نیست.
+            </p>
+            <p id="issue-need-recipient-note" class="hint">
+              هنوز اطلاعات هنرجو ذخیره نشده — ابتدا «ذخیره اطلاعات هنرجو» را بزنید.
+            </p>
+            <p id="issued-cert-link" class="hint" dir="ltr" hidden></p>
+            <div class="btn-row">
+              <button id="issue-left-qr-button" class="btn btn-primary" type="button" disabled>تولید QR اعتبار و ثبت گواهینامه</button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button id="apply-button" class="btn btn-primary" type="submit">اعمال و ذخیره</button>
+            <button id="print-button" class="btn btn-secondary" type="button">چاپ</button>
+            <button id="png-button" class="btn btn-secondary" type="button">دانلود PNG</button>
+            <button id="pdf-button" class="btn btn-secondary" type="button">دانلود PDF</button>
+            <button id="reset-button" class="btn btn-ghost" type="button">بازگشت به پیش‌فرض</button>
+          </div>
+        </form>
+
+        <p id="save-status" class="status" aria-live="polite"></p>
+        <div id="offline-badge" class="offline-badge">حالت آنلاین</div>
+
+        <label class="site-wm-toggle" title="لوگوی محو سایت پندنیک روی تمام گواهینامه‌ها">
+          <input id="site-watermark-enabled" type="checkbox" checked>
+          <span>لوگوی محو پندنیک در پس‌زمینه</span>
+        </label>
+      </aside>
+
+      <section class="preview-wrap" aria-label="پیش‌نمایش گواهینامه">
+        <div class="preview-head no-print">
+          <div>
+            <p class="panel-kicker">پیش‌نمایش زنده · درگ‌اند‌دراپ فعال</p>
+            <h2 id="active-theme-label">Certificate Studio</h2>
+          </div>
+          <p class="preview-meta">المان‌ها را بکشید · فایل تصویر را روی گواهینامه رها کنید</p>
+        </div>
+
+        <div class="quick-bar no-print" id="quick-bar">
+          <div class="quick-group">
+            <span class="quick-label">زبان</span>
+            <div id="quick-language" class="chip-row compact"></div>
+          </div>
+          <div class="quick-group">
+            <span class="quick-label">جهت</span>
+            <div id="quick-direction" class="chip-row compact">
+              <button type="button" class="chip-btn" data-dir="ltr">LTR</button>
+              <button type="button" class="chip-btn" data-dir="rtl">RTL</button>
+            </div>
+          </div>
+          <div class="quick-group">
+            <span class="quick-label">فونت</span>
+            <div id="quick-font" class="chip-row compact"></div>
+          </div>
+        </div>
+
+        <div id="certificate-stage" class="certificate-stage drop-target">
+          <div id="stage-drop-overlay" class="stage-drop-overlay" hidden>
+            فایل تصویر را اینجا رها کنید<br>
+            <small>لوگو / آیکون / عکس</small>
+          </div>
+          <article id="certificate-canvas" class="certificate-canvas edit-mode" aria-label="Certificate preview" dir="ltr">
+            <div id="cert-frame" class="cert-frame"></div>
+            <div id="cert-paper" class="cert-paper">
+              <img id="site-watermark" class="site-watermark" src="./assets/pandenik-logo-transparent.png" alt="" aria-hidden="true">
+              <img id="watermark-image" class="watermark-image" alt="" aria-hidden="true">
+            </div>
+            <img id="theme-frame" class="theme-frame" alt="" aria-hidden="true">
+            <div id="inner-border" class="inner-border" aria-hidden="true"></div>
+
+            <svg class="flourish tl" viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M8 83C16 51 39 58 45 30C48 15 60 9 82 8"></path>
+              <path d="M10 62C31 65 28 43 49 42C63 41 65 24 73 17"></path>
+              <path d="M25 86C25 70 38 69 42 57"></path>
+              <circle class="fill-gold" cx="15" cy="82" r="3"></circle>
+              <circle class="fill-gold" cx="45" cy="30" r="2.5"></circle>
+              <circle class="fill-gold" cx="72" cy="17" r="2.5"></circle>
+            </svg>
+            <svg class="flourish tr" viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M8 83C16 51 39 58 45 30C48 15 60 9 82 8"></path>
+              <path d="M10 62C31 65 28 43 49 42C63 41 65 24 73 17"></path>
+              <path d="M25 86C25 70 38 69 42 57"></path>
+              <circle class="fill-gold" cx="15" cy="82" r="3"></circle>
+              <circle class="fill-gold" cx="45" cy="30" r="2.5"></circle>
+              <circle class="fill-gold" cx="72" cy="17" r="2.5"></circle>
+            </svg>
+            <svg class="flourish bl" viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M8 83C16 51 39 58 45 30C48 15 60 9 82 8"></path>
+              <path d="M10 62C31 65 28 43 49 42C63 41 65 24 73 17"></path>
+              <path d="M25 86C25 70 38 69 42 57"></path>
+              <circle class="fill-gold" cx="15" cy="82" r="3"></circle>
+              <circle class="fill-gold" cx="45" cy="30" r="2.5"></circle>
+              <circle class="fill-gold" cx="72" cy="17" r="2.5"></circle>
+            </svg>
+            <svg class="flourish br" viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M8 83C16 51 39 58 45 30C48 15 60 9 82 8"></path>
+              <path d="M10 62C31 65 28 43 49 42C63 41 65 24 73 17"></path>
+              <path d="M25 86C25 70 38 69 42 57"></path>
+              <circle class="fill-gold" cx="15" cy="82" r="3"></circle>
+              <circle class="fill-gold" cx="45" cy="30" r="2.5"></circle>
+              <circle class="fill-gold" cx="72" cy="17" r="2.5"></circle>
+            </svg>
+
+            <div id="logo-wrap" class="logo-wrap movable is-hidden" data-move="logo" style="display:none">
+              <button type="button" id="logo-delete-btn" class="layer-delete-btn no-print" title="حذف لوگو">×</button>
+              <div class="gold-emblem" aria-hidden="true">
+                <span class="emblem-mark"><span></span></span>
+              </div>
+              <img id="logo-image" class="logo-image" alt="Institution logo">
+            </div>
+
+            <h2 id="title-preview" class="certificate-title"></h2>
+            <div id="divider" class="divider" aria-hidden="true"></div>
+            <div id="divider-diamond" class="divider-diamond" aria-hidden="true"></div>
+
+            <div id="recipient-preview" class="cert-value recipient-value"></div>
+            <p id="intro-preview" class="intro-text"></p>
+            <div id="course-date-preview" class="cert-value course-date"></div>
+            <div id="course-name-preview" class="cert-value course-name"></div>
+            <p id="duration-preview" class="duration-text"></p>
+
+            <div class="description">
+              <p id="description-one-preview"></p>
+              <p id="description-two-preview"></p>
+            </div>
+
+            <div id="institution-preview" class="cert-value institution-value"></div>
+            <p id="qr-notice-preview" class="qr-notice"></p>
+
+            <div id="student-photo-wrap" class="photo-wrap movable" data-move="studentPhoto">
+              <img id="student-photo" class="photo-image" alt="هنرجو">
+              <span id="student-photo-caption-preview" class="photo-caption"></span>
+            </div>
+            <div id="instructor-photo-wrap" class="photo-wrap movable" data-move="instructorPhoto">
+              <img id="instructor-photo" class="photo-image" alt="مدرس">
+              <span id="instructor-photo-caption-preview" class="photo-caption"></span>
+            </div>
+
+            <div id="qr-left" class="qr-box movable" data-move="qrLeft" aria-label="QR تایید اصالت — صفحه اختصاصی گواهینامه" title="QR چپ: تأیید اصالت">
+              <button type="button" class="layer-delete-btn no-print" data-hide-qr="left" title="مخفی کردن QR">×</button>
+            </div>
+            <div id="qr-right" class="qr-box movable" data-move="qrRight" aria-label="QR پروفایل مدرس" title="QR راست: پروفایل مدرس">
+              <button type="button" class="layer-delete-btn no-print" data-hide-qr="right" title="مخفی کردن QR">×</button>
+            </div>
+
+            <div id="signature-line" class="signature-line" aria-hidden="true"></div>
+            <div id="instructor-preview" class="cert-value instructor-value"></div>
+            <p id="signature-caption-preview" class="signature-caption"></p>
+
+            <div id="audit-footer" class="audit-footer" hidden>
+              <p id="audit-footer-date" class="audit-footer-date"></p>
+              <p id="audit-footer-note" class="audit-footer-note"></p>
+            </div>
+
+            <div id="icons-layer"></div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="./vendor/qrcode.min.js"></script>
+  <script src="./vendor/html2canvas.min.js"></script>
+  <script src="./vendor/jspdf.umd.min.js"></script>
+  <script src="./js/themes.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
