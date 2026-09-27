@@ -699,9 +699,42 @@ button, input, textarea, select { font: inherit; }
   display: block;
 }
 
-.site-watermark,
-.site-wm-toggle {
+.site-watermark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  height: 520px;
+  object-fit: contain;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 1 !important;
+  background: transparent;
+}
+
+.site-watermark.hidden {
   display: none !important;
+  opacity: 0 !important;
+}
+
+.site-wm-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 162, 75, 0.22);
+  background: rgba(255, 255, 255, 0.03);
+  color: #9aa3b5;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-wm-toggle input {
+  accent-color: var(--gold);
 }
 
 .ui-lang-field {

@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "certificate-studio-v28";
+  const STORAGE_KEY = "certificate-studio-v29";
   const CERT_W = 1123;
   const CERT_H = 794;
   const QR_PLACEHOLDER = "./assets/qr-placeholder.png";
@@ -52,6 +52,7 @@
     themeFrameEnabled: true,
     themePrimary: "",
     themeRecolorActive: false,
+    siteWatermarkEnabled: true,
     watermarkEnabled: false,
     watermarkDataUrl: "",
     watermarkOpacity: 0.1,
@@ -81,6 +82,8 @@
     logoWrap: document.getElementById("logo-wrap"),
     logoImage: document.getElementById("logo-image"),
     watermark: document.getElementById("watermark-image"),
+    siteWatermark: document.getElementById("site-watermark"),
+    siteWatermarkEnabled: document.getElementById("site-watermark-enabled"),
     themePreview: document.getElementById("theme-preview"),
     themeFrame: document.getElementById("theme-frame"),
     qrLeft: document.getElementById("qr-left"),
@@ -577,6 +580,7 @@
     els.layout.borderWidth.value = s.borderInnerWidth;
     els.layout.showFlourishes.checked = state.showFlourishes === true;
     if (els.layout.themeFrameEnabled) els.layout.themeFrameEnabled.checked = state.themeFrameEnabled !== false;
+    if (els.siteWatermarkEnabled) els.siteWatermarkEnabled.checked = state.siteWatermarkEnabled !== false;
     els.layout.studentPhotoEnabled.checked = !!state.studentPhotoEnabled;
     els.layout.studentX.value = state.studentPhoto.x;
     els.layout.studentY.value = state.studentPhoto.y;
@@ -663,6 +667,7 @@
     state.watermarkSize = Number(els.layout.watermarkSize.value);
     state.showFlourishes = els.layout.showFlourishes.checked;
     if (els.layout.themeFrameEnabled) state.themeFrameEnabled = els.layout.themeFrameEnabled.checked;
+    if (els.siteWatermarkEnabled) state.siteWatermarkEnabled = els.siteWatermarkEnabled.checked;
     state.studentPhotoEnabled = els.layout.studentPhotoEnabled.checked;
     state.studentPhoto.x = Number(els.layout.studentX.value);
     state.studentPhoto.y = Number(els.layout.studentY.value);
@@ -1106,6 +1111,15 @@
 
   function renderWatermarks() {
     renderThemeFrame();
+
+    if (els.siteWatermark) {
+      const logoSrc = typeof SITE_LOGO !== "undefined" ? SITE_LOGO : "./assets/pandenik-logo-transparent.png";
+      if (els.siteWatermark.getAttribute("src") !== logoSrc) els.siteWatermark.src = logoSrc;
+      const on = state.siteWatermarkEnabled !== false;
+      els.siteWatermark.classList.toggle("hidden", !on);
+      els.siteWatermark.style.opacity = on ? "0.08" : "0";
+      els.siteWatermark.style.display = on ? "block" : "none";
+    }
 
     const hasCustom = state.watermarkEnabled && !!state.watermarkDataUrl;
     els.watermark.classList.toggle("visible", hasCustom);
@@ -2549,6 +2563,13 @@
     syncControlsFromState();
     saveLocal(false);
     setStatus("تصویر پس‌زمینه حذف شد.");
+  });
+
+  els.siteWatermarkEnabled?.addEventListener("change", () => {
+    state.siteWatermarkEnabled = els.siteWatermarkEnabled.checked;
+    renderWatermarks();
+    saveLocal(false);
+    setStatus(state.siteWatermarkEnabled ? "لوگوی محو پندنیک روشن شد." : "لوگوی محو پندنیک خاموش شد.");
   });
 
   document.getElementById("student-photo-file").addEventListener("change", async (event) => {

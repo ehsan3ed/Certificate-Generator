@@ -1,4 +1,4 @@
-const CACHE_NAME = "certificate-studio-v28";
+const CACHE_NAME = "certificate-studio-v29";
 const ASSETS = [
   "./",
   "./index.html",
