@@ -45,8 +45,8 @@ const CERT_LANGUAGES = {
         "This certificate is valid and has been issued at the request of the holder for educational purposes and has been approved by the relevant instructor.",
       qrNotice: "The left QR verifies authenticity (dedicated certificate page). The right QR links to the instructor profile.",
       signatureCaption: "INSTRUCTOR'S SIGNATURE",
-      studentPhotoCaption: "هنرجو",
-      instructorPhotoCaption: "مدرس"
+      studentPhotoCaption: "Trainee / Apprentice",
+      instructorPhotoCaption: "Instructor"
     }
   },
   fa: {
@@ -62,9 +62,9 @@ const CERT_LANGUAGES = {
         "این گواهینامه تأیید می‌کند که دارنده آن دوره آموزشی فوق را با موفقیت گذرانده و دانش، مهارت و شایستگی‌های لازم را کسب کرده است.",
       descriptionTwo:
         "این گواهینامه معتبر بوده و بنا به درخواست دارنده برای اهداف آموزشی صادر و به تأیید مدرس مربوطه رسیده است.",
-      qrNotice: "اصالت گواهینامه با QR سمت چپ (صفحه اختصاصی تأیید در سایت) بررسی می‌شود. QR سمت راست مربوط به پروفایل مدرس است.",
+      qrNotice: "اصالت گواهینامه با QR سمت چپ (صفحه اختصاصی تأیید در سایت پندنیک) بررسی می‌شود. QR سمت راست مربوط به پروفایل مدرس است.",
       signatureCaption: "امضای مدرس",
-      studentPhotoCaption: "هنرجو",
+      studentPhotoCaption: "هنرجو یا کارآموز",
       instructorPhotoCaption: "مدرس"
     }
   },
@@ -81,9 +81,9 @@ const CERT_LANGUAGES = {
         "تؤكد هذه الشهادة أن حاملها قد أكمل الدورة التدريبية المذكورة بنجاح واكتسب المعرفة والمهارات والكفاءات اللازمة.",
       descriptionTwo:
         "هذه الشهادة سارية وقد صدرت بناءً على طلب حاملها لأغراض تعليمية ووافق عليها المدرب المختص.",
-      qrNotice: "يتم التحقق من أصالة الشهادة عبر رمز QR الأيسر (صفحة الشهادة). رمز QR الأيمن لملف المدرب.",
+      qrNotice: "يتم التحقق من أصالة الشهادة عبر رمز QR الأيسر (صفحة الشهادة على بندنيك). رمز QR الأيمن لملف المدرب.",
       signatureCaption: "توقيع المدرب",
-      studentPhotoCaption: "المتدرب",
+      studentPhotoCaption: "متدرب / متدرب مهني",
       instructorPhotoCaption: "المدرب"
     }
   }

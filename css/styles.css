@@ -664,6 +664,22 @@ button, input, textarea, select { font: inherit; }
   opacity: 0 !important;
 }
 
+.ui-lang-field {
+  margin: 0.75rem 0 1rem;
+}
+
+.ui-lang-field .chip-row {
+  margin-top: 0.35rem;
+}
+
+.final-issue-card {
+  margin-top: 1rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: 12px;
+  background: rgba(201, 162, 75, 0.08);
+}
+
 .site-wm-toggle {
   display: flex;
   align-items: center;

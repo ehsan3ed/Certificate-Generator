@@ -13,12 +13,12 @@ tools/__pycache__/
 certificate-studio-deploy/
 *.zip
 New Text Document.txt
-1Ms.-Fatemeh-Taghipour.png
-C.LOGO.png
+_local-samples/
 *.local
 .env
 .env.*
-!/.env.example
-
-_local-samples/
-
+!.env.example
+# accidental personal exports
+*Taghipour*
+*Yousefi*
+*Fatemeh*

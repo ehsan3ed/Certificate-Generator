@@ -1,19 +1,23 @@
 (() => {
-  const STORAGE_KEY = "azarakh-certificate-v9";
+  const STORAGE_KEY = "certificate-studio-v10";
   const CERT_W = 1123;
   const CERT_H = 794;
+  const QR_PLACEHOLDER = "./assets/qr-placeholder.png";
+  const PANDENIK_HOME = "https://pandenik.ir";
+  const SECRET_STATE_KEYS = ["siteAuthToken"];
 
   const defaultStyle = () => structuredClone(CERT_THEMES[0].style);
 
   const defaults = {
     themeId: "classic-navy",
+    uiLang: "fa",
     language: "fa",
     direction: "rtl",
     fontPack: "persian-elegant",
     title: CERT_LANGUAGES.fa.texts.title,
-    recipientName: "هنرجو",
+    recipientName: "هنرجو یا کارآموز",
     recipientPhone: "",
-    courseDate: "شهریور ۱۴۰۵",
+    courseDate: "تاریخ دوره",
     courseName: "نام دوره",
     duration: CERT_LANGUAGES.fa.texts.duration,
     auditFooterDate: "",
@@ -672,15 +676,73 @@
     els.stage.style.height = `${CERT_H * scale}px`;
   }
 
+  function t(key) {
+    return typeof uiT === "function" ? uiT(state.uiLang || "fa", key) : key;
+  }
+
+  function isStandaloneMode() {
+    return !String(state.siteAuthToken || "").trim();
+  }
+
+  function applyUiLanguage() {
+    const lang = state.uiLang === "en" ? "en" : "fa";
+    state.uiLang = lang;
+    const pack = UI_I18N[lang] || UI_I18N.fa;
+    document.documentElement.lang = pack.htmlLang || lang;
+    document.documentElement.dir = pack.dir || (lang === "fa" ? "rtl" : "ltr");
+    document.title = t("meta.title");
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
+
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.getAttribute("data-i18n");
+      if (!key) return;
+      const value = t(key);
+      if (node.tagName === "INPUT" || node.tagName === "TEXTAREA") {
+        if (node.hasAttribute("placeholder")) node.placeholder = value;
+      } else {
+        node.textContent = value;
+      }
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((node) => {
+      const key = node.getAttribute("data-i18n-html");
+      if (key) node.innerHTML = t(key);
+    });
+
+    const uiSelect = document.getElementById("ui-lang");
+    if (uiSelect) uiSelect.value = lang;
+    document.querySelectorAll("[data-ui-lang]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-ui-lang") === lang);
+    });
+    updateStandaloneFinalCard();
+    updateOnlineBadge();
+  }
+
+  function updateStandaloneFinalCard() {
+    const card = document.getElementById("final-issue-card");
+    const linked = document.getElementById("final-linked-actions");
+    const solo = document.getElementById("final-standalone-actions");
+    if (!card) return;
+    const standalone = isStandaloneMode();
+    if (linked) linked.hidden = standalone;
+    if (solo) solo.hidden = !standalone;
+  }
+
+  function showPlaceholderQr(target) {
+    const img = document.createElement("img");
+    img.src = QR_PLACEHOLDER;
+    img.alt = "QR sample";
+    img.width = 200;
+    img.height = 200;
+    img.style.cssText = "width:100%;height:100%;object-fit:contain;display:block;background:#fff;";
+    target.appendChild(img);
+  }
+
   async function drawQr(target, text, size) {
     target.innerHTML = "";
     const value = (text || "").trim();
     if (!value) {
-      const empty = document.createElement("div");
-      empty.style.cssText =
-        "width:100%;height:100%;display:grid;place-items:center;font:700 9px/1.2 Vazirmatn,sans-serif;color:#888;text-align:center;padding:4px;background:#fafafa;";
-      empty.textContent = "QR پس از صدور";
-      target.appendChild(empty);
+      showPlaceholderQr(target);
       return;
     }
     try {
@@ -697,11 +759,7 @@
       canvas.style.imageRendering = "pixelated";
       target.appendChild(canvas);
     } catch (error) {
-      const fallback = document.createElement("div");
-      fallback.style.cssText =
-        "width:100%;height:100%;display:grid;place-items:center;font:700 10px/1.2 Lato,sans-serif;color:#333;text-align:center;padding:4px;";
-      fallback.textContent = "QR Error";
-      target.appendChild(fallback);
+      showPlaceholderQr(target);
       console.error(error);
     }
   }
@@ -1105,8 +1163,12 @@
   }
 
   function saveLocal(showMessage = true) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    if (showMessage) setStatus("ذخیره شد.");
+    const toSave = structuredClone(state);
+    SECRET_STATE_KEYS.forEach((key) => {
+      toSave[key] = "";
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    if (showMessage) setStatus(t("status.ready"));
   }
 
   function loadLocal() {
@@ -1125,11 +1187,21 @@
         style: { ...defaultStyle(), ...(parsed.style || {}) },
         icons: Array.isArray(parsed.icons) ? parsed.icons : []
       };
+      SECRET_STATE_KEYS.forEach((key) => {
+        merged[key] = "";
+      });
       // پاک‌سازی لینک‌های خطرناک ذخیره‌شده (استودیو به‌جای /c/...)
       if (!isPublicCertUrl(merged.qrLeftUrl)) {
         merged.qrLeftUrl = "";
         merged.qrLeftFromPage = false;
         merged.qrLeftFromSite = false;
+      }
+      const banned = [/maryam/i, /taghipour/i, /yousefi/i, /sara\s+yousefi/i, /تقی\s*پور/, /یوسفی\s*پور/];
+      if (banned.some((re) => re.test(String(merged.recipientName || "")))) {
+        merged.recipientName = defaults.recipientName;
+      }
+      if (banned.some((re) => re.test(String(merged.instructorName || "")))) {
+        merged.instructorName = defaults.instructorName;
       }
       if (merged.issuedCertCode && normalizePhoneClient(merged.recipientPhone || "")) {
         merged.recipientSavedInDb = true;
@@ -1151,7 +1223,7 @@
 
   function updateOnlineBadge() {
     const online = navigator.onLine;
-    els.offlineBadge.textContent = online ? "حالت آنلاین" : "حالت آفلاین";
+    els.offlineBadge.textContent = online ? t("status.online") : t("status.offline");
     els.offlineBadge.classList.toggle("is-offline", !online);
   }
 
@@ -1358,20 +1430,28 @@
     const needRec = document.getElementById("issue-need-recipient-note");
     const blockedTick = state.requireBlueTick && state.canIssue === false;
     const needSave = !state.recipientSavedInDb || !state.issuedCertCode;
+    updateStandaloneFinalCard();
     if (btn) {
-      btn.disabled = blockedTick || needSave;
-      btn.classList.toggle("is-locked", blockedTick || needSave);
-      btn.title = blockedTick
-        ? "برای صدور به تیک آبی نیاز است"
-        : needSave
-          ? "ابتدا اطلاعات هنرجو را ذخیره کنید"
-          : "صفحه اختصاصی + QR چپ + ذخیره تصویر نهایی";
-      if (!btn.dataset.busy) {
-        btn.textContent = "تولید QR اعتبار و ثبت گواهینامه";
+      if (isStandaloneMode()) {
+        btn.disabled = true;
+        btn.classList.add("is-locked");
+        btn.title = t("alert.needPandenik");
+        if (!btn.dataset.busy) btn.textContent = t("final.cta");
+      } else {
+        btn.disabled = blockedTick || needSave;
+        btn.classList.toggle("is-locked", blockedTick || needSave);
+        btn.title = blockedTick
+          ? "برای صدور به تیک آبی نیاز است"
+          : needSave
+            ? "ابتدا اطلاعات هنرجو را ذخیره کنید"
+            : "صفحه اختصاصی + QR چپ + ذخیره تصویر نهایی";
+        if (!btn.dataset.busy) {
+          btn.textContent = "تولید QR اعتبار و ثبت گواهینامه";
+        }
       }
     }
-    if (note) note.hidden = !blockedTick;
-    if (needRec) needRec.hidden = blockedTick || !needSave;
+    if (note) note.hidden = isStandaloneMode() || !blockedTick;
+    if (needRec) needRec.hidden = isStandaloneMode() || blockedTick || !needSave;
     updateQrLockUi();
   }
 
@@ -1796,15 +1876,40 @@
     if (!pack) return;
     state.language = pack.id;
     state.direction = pack.dir;
+    const genericRecipients = new Set([
+      defaults.recipientName,
+      "هنرجو",
+      "هنرجو یا کارآموز",
+      "Trainee / Apprentice",
+      "Trainee",
+      "المتدرب",
+      "متدرب / متدرب مهني"
+    ]);
+    const genericInstructors = new Set([
+      defaults.instructorName,
+      "مدرس",
+      "Instructor",
+      "المدرب"
+    ]);
     const names = keepNames
       ? {
-          recipientName: state.recipientName,
-          instructorName: state.instructorName,
+          recipientName: genericRecipients.has(state.recipientName)
+            ? uiT(state.uiLang || "fa", "default.recipient")
+            : state.recipientName,
+          instructorName: genericInstructors.has(state.instructorName)
+            ? uiT(state.uiLang || "fa", "default.instructor")
+            : state.instructorName,
           institutionName: state.institutionName,
           courseDate: state.courseDate,
           courseName: state.courseName
         }
-      : {};
+      : {
+          recipientName: uiT(state.uiLang || "fa", "default.recipient"),
+          instructorName: uiT(state.uiLang || "fa", "default.instructor"),
+          institutionName: uiT(state.uiLang || "fa", "default.institution"),
+          courseDate: uiT(state.uiLang || "fa", "default.courseDate"),
+          courseName: uiT(state.uiLang || "fa", "default.course")
+        };
     Object.assign(state, pack.texts, names);
     populateForm(state);
   }
@@ -2099,18 +2204,19 @@
   }
 
   function assertIssuedAuthenticityQr() {
-    if (!isPublicCertUrl(state.qrLeftUrl) || !state.issuedCertCode) {
-      window.alert(
-        "ابتدا «تولید QR اعتبار و ثبت گواهینامه» را بزنید.\nQR اصالت فقط به صفحه اختصاصی /c/... وصل می‌شود — نه به استودیو."
-      );
-      return false;
+    if (isPublicCertUrl(state.qrLeftUrl) && state.issuedCertCode) return true;
+    if (isStandaloneMode()) {
+      // نسخه مستقل گیت‌هاب: خروجی با QR نمونه مجاز است + راهنمای پندنیک
+      setStatus(t("status.placeholderExport"));
+      return true;
     }
-    return true;
+    window.alert(t("alert.needPandenik"));
+    return false;
   }
 
   async function exportPng() {
     if (!assertIssuedAuthenticityQr()) return;
-    setStatus("در حال ساخت PNG…");
+    setStatus("…");
     const scale = Number(getComputedStyle(els.canvas).getPropertyValue("--certificate-scale")) || 1;
     const shot = await html2canvas(els.canvas, {
       backgroundColor: null,
@@ -2119,15 +2225,16 @@
       logging: false
     });
     const link = document.createElement("a");
-    link.download = `${(state.recipientName || "certificate").replace(/\s+/g, "-")}.png`;
+    const baseName = (state.recipientName || "certificate").replace(/\s+/g, "-");
+    link.download = `${baseName}.png`;
     link.href = shot.toDataURL("image/png");
     link.click();
-    setStatus("PNG دانلود شد.");
+    setStatus(isStandaloneMode() && !isPublicCertUrl(state.qrLeftUrl) ? t("status.placeholderExport") : t("status.exportedPng"));
   }
 
   async function exportPdf() {
     if (!assertIssuedAuthenticityQr()) return;
-    setStatus("در حال ساخت PDF…");
+    setStatus("…");
     const scale = Number(getComputedStyle(els.canvas).getPropertyValue("--certificate-scale")) || 1;
     const shot = await html2canvas(els.canvas, {
       backgroundColor: state.style.outerBg,
@@ -2144,7 +2251,7 @@
     });
     pdf.addImage(shot.toDataURL("image/png"), "PNG", 0, 0, CERT_W, CERT_H);
     pdf.save(`${(state.recipientName || "certificate").replace(/\s+/g, "-")}.pdf`);
-    setStatus("PDF دانلود شد.");
+    setStatus(isStandaloneMode() && !isPublicCertUrl(state.qrLeftUrl) ? t("status.placeholderExport") : t("status.exportedPdf"));
   }
 
   function resetAll() {
@@ -2422,14 +2529,30 @@
   });
 
   document.getElementById("refresh-qr").addEventListener("click", () => {
-    // فقط بازترسیم — لینک‌ها عوض نمی‌شوند (مگر ادمین)
     Promise.all([
-      state.qrLeftUrl ? drawQr(els.qrLeft, state.qrLeftUrl, state.qrLeft.size) : Promise.resolve(),
-      state.qrRightUrl ? drawQr(els.qrRight, state.qrRightUrl, state.qrRight.size) : Promise.resolve()
+      drawQr(els.qrLeft, state.qrLeftUrl, state.qrLeft.size),
+      drawQr(els.qrRight, state.qrRightUrl, state.qrRight.size)
     ]).then(() => {
       saveLocal(false);
-      setStatus("QRها با همان لینک‌های قفل‌شده بازترسیم شدند.");
+      setStatus(t("status.ready"));
     });
+  });
+
+  document.getElementById("open-pandenik-cta")?.addEventListener("click", () => {
+    window.open(PANDENIK_HOME, "_blank", "noopener,noreferrer");
+  });
+
+  document.querySelectorAll("[data-ui-lang]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.uiLang = btn.getAttribute("data-ui-lang") === "en" ? "en" : "fa";
+      applyUiLanguage();
+      saveLocal(false);
+    });
+  });
+  document.getElementById("ui-lang")?.addEventListener("change", (event) => {
+    state.uiLang = event.target.value === "en" ? "en" : "fa";
+    applyUiLanguage();
+    saveLocal(false);
   });
 
   window.addEventListener("online", updateOnlineBadge);
@@ -2441,19 +2564,22 @@
   setupDragging();
   setupFileDrop();
   setupSiteQrBridge();
-  updateOnlineBadge();
 
   const saved = loadLocal();
   state = saved || structuredClone(defaults);
+  if (!state.uiLang) state.uiLang = "fa";
   populateForm(state);
+  applyUiLanguage();
+  updateOnlineBadge();
   fitCertificate();
   renderAll().then(() => {
     readSiteIntegration();
     updateQrLeftSourceHint();
     updateIssueButtonState();
+    applyUiLanguage();
     populateForm(state);
     renderPreview(state);
-    setStatus(saved ? "اطلاعات ذخیره‌شده بارگذاری شد." : "آماده ویرایش.");
+    setStatus(saved ? t("status.loaded") : t("status.ready"));
   });
 
   // SW disabled on pandenik host

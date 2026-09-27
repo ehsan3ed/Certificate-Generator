@@ -1,15 +1,17 @@
-const CACHE_NAME = "certificate-studio-v10";
+const CACHE_NAME = "certificate-studio-v11";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/styles.css",
   "./js/app.js",
   "./js/themes.js",
+  "./js/ui-i18n.js",
   "./vendor/qrcode.min.js",
   "./vendor/html2canvas.min.js",
   "./vendor/jspdf.umd.min.js",
   "./assets/pandenik-logo.png",
   "./assets/pandenik-logo-transparent.png",
+  "./assets/qr-placeholder.png",
   "./assets/template-reference.png",
   "./assets/theme-classic-navy.png",
   "./assets/theme-emerald-gold.png",

@@ -15,25 +15,37 @@
   <main class="editor-shell">
     <div class="layout">
       <aside class="editor-panel no-print">
-        <p class="panel-kicker">CERTIFICATE STUDIO</p>
-        <h1 class="panel-title">سازنده گواهینامه</h1>
-        <p class="panel-desc">
-          طرح، زبان، راست‌چین/چپ‌چین، فونت، لوگو، عکس هنرجو/مدرس و متن‌ها را تنظیم کنید.
+        <p class="panel-kicker" data-i18n="panel.kicker">CERTIFICATE STUDIO</p>
+        <h1 class="panel-title" data-i18n="panel.title">سازنده گواهینامه</h1>
+        <p class="panel-desc" data-i18n="panel.desc">
+          طرح، زبان، فونت، لوگو، عکس و متن را تنظیم کنید. برای QR معتبر به پندنیک مراجعه کنید.
         </p>
 
+        <div class="field ui-lang-field no-print">
+          <label data-i18n="ui.langLabel">زبان رابط</label>
+          <div class="chip-row compact" id="ui-lang-chips">
+            <button type="button" class="chip-btn active" data-ui-lang="fa">فارسی</button>
+            <button type="button" class="chip-btn" data-ui-lang="en">English</button>
+          </div>
+          <select id="ui-lang" class="editor-input sr-only" aria-hidden="true">
+            <option value="fa">فارسی</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
         <div class="tabs" role="tablist">
-          <button type="button" class="tab-btn active" data-tab="themes">طرح‌ها</button>
-          <button type="button" class="tab-btn" data-tab="lang">زبان/فونت</button>
-          <button type="button" class="tab-btn" data-tab="main">متن</button>
-          <button type="button" class="tab-btn" data-tab="media">لوگو/عکس</button>
-          <button type="button" class="tab-btn" data-tab="layers">لایه‌ها</button>
-          <button type="button" class="tab-btn" data-tab="style">پس‌زمینه</button>
-          <button type="button" class="tab-btn" data-tab="icons">آیکون</button>
+          <button type="button" class="tab-btn active" data-tab="themes" data-i18n="tab.themes">طرح‌ها</button>
+          <button type="button" class="tab-btn" data-tab="lang" data-i18n="tab.lang">زبان/فونت</button>
+          <button type="button" class="tab-btn" data-tab="main" data-i18n="tab.main">متن</button>
+          <button type="button" class="tab-btn" data-tab="media" data-i18n="tab.media">لوگو/عکس</button>
+          <button type="button" class="tab-btn" data-tab="layers" data-i18n="tab.layers">لایه‌ها</button>
+          <button type="button" class="tab-btn" data-tab="style" data-i18n="tab.style">پس‌زمینه</button>
+          <button type="button" class="tab-btn" data-tab="icons" data-i18n="tab.icons">آیکون</button>
         </div>
 
         <form id="certificate-form" novalidate>
           <div id="tab-themes" class="tab-panel active">
-            <p class="section-note">۲۳ طرح آماده خالی (بدون متن و QR). با انتخاب هر طرح، قاب و رنگ‌ها اعمال می‌شود.</p>
+            <p class="section-note" data-i18n="themes.note">طرح‌های آماده خالی (بدون متن ثابت). با انتخاب هر طرح، قاب و رنگ‌ها اعمال می‌شود.</p>
             <div id="theme-gallery" class="theme-gallery"></div>
           </div>
 
@@ -198,52 +210,36 @@
             </div>
 
             <div class="control-card">
-              <h3>QR چپ — تایید اصالت گواهینامه</h3>
-              <p class="hint">
-                <strong>QR سمت چپ</strong> فقط آدرس اختصاصی گواهینامه در پندنیک است
-                (<span dir="ltr"> (/c/PN-XXXXXXXX)</span>.
-                شما فقط جا و اندازه را تنظیم می‌کنید؛ لینک را آپلود یا دستی وارد نمی‌کنید.
-                بعد از آماده شدن گواهینامه، با دکمه پایین صفحه این QR تولید و در همین محل قرار می‌گیرد.
+              <h3 data-i18n="qr.leftTitle">QR چپ — تایید اصالت</h3>
+              <p class="hint" data-i18n="qr.leftHint">
+                در نسخه مستقل، تصویر نمونه نمایش داده می‌شود. برای QR معتبر به سایت پندنیک مراجعه کنید.
               </p>
-              <p class="hint">
-                <strong>QR سمت راست</strong> هویت مدرس است (کارت ویزیت دیجیتال / پروفایل شما) و برای کاربران عادی قفل است.
-                فقط ادمین سایت می‌تواند لینک QR راست را تغییر دهد.
+              <p class="hint" data-i18n="qr.rightHint">
+                QR نمونه مدرس. لینک واقعی فقط از طریق حساب پندنیک تنظیم می‌شود.
               </p>
-              <label for="qr-left-url">آدرس اختصاصی (فقط‌خواندنی — پس از صدور پر می‌شود)</label>
-              <input id="qr-left-url" class="editor-input" type="url" dir="ltr" readonly placeholder="https://pandenik.ir/c/PN-XXXXXXXX">
-              <p class="hint" style="color:#b45309">
-                مهم: QR چپ لینک کوتاه شماره‌دار است — مثل /card/sara/c/240 (بیس 239؛ هر گواهی جدید +1).
-                قبل از دانلود PNG/PDF حتماً «تولید QR اعتبار» را بزنید.
-              </p>
-              <label class="check-row admin-only-qr" hidden>
-                <input id="qr-left-from-page" type="checkbox" disabled>
-                (غیرفعال) آدرس صفحه استودیو مجاز نیست
-              </label>
+              <label for="qr-left-url">URL</label>
+              <input id="qr-left-url" class="editor-input" type="url" dir="ltr" readonly data-i18n="qr.placeholderUrl" placeholder="نمونه — برای لینک واقعی به pandenik.ir بروید">
               <p id="qr-left-source" class="hint"></p>
-              <label class="range-label">افقی <span id="qr-left-x-val"></span></label>
+              <label class="range-label">X <span id="qr-left-x-val"></span></label>
               <input id="qr-left-x" class="range" type="range" min="40" max="1000" step="1">
-              <label class="range-label">عمودی <span id="qr-left-y-val"></span></label>
+              <label class="range-label">Y <span id="qr-left-y-val"></span></label>
               <input id="qr-left-y" class="range" type="range" min="40" max="700" step="1">
-              <label class="range-label">اندازه (برای اسکن راحت‌تر، حداقل ۱۰۰) <span id="qr-left-size-val"></span></label>
+              <label class="range-label">Size <span id="qr-left-size-val"></span></label>
               <input id="qr-left-size" class="range" type="range" min="90" max="160" step="1">
             </div>
 
             <div class="control-card">
-              <h3>QR راست — هویت مدرس (پروفایل / کارت ویزیت)</h3>
-              <p class="hint">
-                با ورود به این بخش، لینک هویت شما از پروفایل یا کارت ویزیت دیجیتال استخراج و اینجا قرار می‌گیرد.
-                می‌توانید جا و اندازه را عوض کنید؛ تغییر لینک فقط برای ادمین مجاز است.
-              </p>
-              <label for="qr-right-url">لینک هویت مدرس</label>
-              <input id="qr-right-url" class="editor-input" type="url" dir="ltr" readonly placeholder="https://pandenik.ir/card/...">
-              <label class="range-label">افقی <span id="qr-right-x-val"></span></label>
+              <h3 data-i18n="qr.rightTitle">QR راست — هویت مدرس</h3>
+              <label for="qr-right-url">URL</label>
+              <input id="qr-right-url" class="editor-input" type="url" dir="ltr" readonly data-i18n="qr.placeholderUrl" placeholder="نمونه — برای لینک واقعی به pandenik.ir بروید">
+              <label class="range-label">X <span id="qr-right-x-val"></span></label>
               <input id="qr-right-x" class="range" type="range" min="40" max="1000" step="1">
-              <label class="range-label">عمودی <span id="qr-right-y-val"></span></label>
+              <label class="range-label">Y <span id="qr-right-y-val"></span></label>
               <input id="qr-right-y" class="range" type="range" min="40" max="700" step="1">
-              <label class="range-label">اندازه <span id="qr-right-size-val"></span></label>
+              <label class="range-label">Size <span id="qr-right-size-val"></span></label>
               <input id="qr-right-size" class="range" type="range" min="90" max="160" step="1">
             </div>
-            <button id="refresh-qr" class="btn btn-ghost" type="button">بازترسیم کیوآرکدها (همان لینک‌های قفل‌شده)</button>
+            <button id="refresh-qr" class="btn btn-ghost" type="button" data-i18n="btn.refreshQr">بازترسیم کیوآرکدها</button>
           </div>
 
           <div id="tab-style" class="tab-panel">
@@ -307,39 +303,52 @@
             <div id="icons-list" class="icons-list"></div>
           </div>
 
-          <div class="final-issue-card no-print">
-            <h3>مرحله آخر — تولید QR اعتبار (چپ) و ثبت تصویر نهایی</h3>
-            <p class="hint">
-              ابتدا با دکمه <strong>ذخیره اطلاعات هنرجو</strong> نام و شماره را در سامانه ثبت کنید؛
-              سپس این دکمه فعال می‌شود و QR اصالت + تصویر نهایی را می‌سازد.
-            </p>
-            <p id="issue-blue-tick-note" class="hint" hidden>
-              شما تیک آبی ندارید — مشاهده آزاد است؛ صدور تا دریافت تیک آبی ممکن نیست.
-            </p>
-            <p id="issue-need-recipient-note" class="hint">
-              هنوز اطلاعات هنرجو ذخیره نشده — ابتدا «ذخیره اطلاعات هنرجو» را بزنید.
-            </p>
-            <p id="issued-cert-link" class="hint" dir="ltr" hidden></p>
-            <div class="btn-row">
-              <button id="issue-left-qr-button" class="btn btn-primary" type="button" disabled>تولید QR اعتبار و ثبت گواهینامه</button>
+          <div class="final-issue-card no-print" id="final-issue-card">
+            <h3 data-i18n="final.title">مرحله آخر — QR معتبر</h3>
+            <div id="final-standalone-actions">
+              <p class="hint" data-i18n="final.body">
+                این برنامه برای طراحی گواهینامه است. برای دریافت کیوآرکد معتبر تایید اصالت و هویت مدرس، به سایت پندنیک مراجعه کنید.
+              </p>
+              <p class="hint" style="color:#b45309" data-i18n="final.noteStandalone">
+                تا زمان صدور در پندنیک، QRهای نمونه روی پیش‌نمایش هستند و لینک واقعی ندارند.
+              </p>
+              <div class="btn-row">
+                <button id="open-pandenik-cta" class="btn btn-primary" type="button" data-i18n="final.cta">ورود به pandenik.ir</button>
+              </div>
+            </div>
+            <div id="final-linked-actions" hidden>
+              <p class="hint">
+                ابتدا با دکمه <strong>ذخیره اطلاعات هنرجو</strong> نام و شماره را در سامانه ثبت کنید؛
+                سپس این دکمه فعال می‌شود و QR اصالت + تصویر نهایی را می‌سازد.
+              </p>
+              <p id="issue-blue-tick-note" class="hint" hidden>
+                شما تیک آبی ندارید — مشاهده آزاد است؛ صدور تا دریافت تیک آبی ممکن نیست.
+              </p>
+              <p id="issue-need-recipient-note" class="hint">
+                هنوز اطلاعات هنرجو ذخیره نشده — ابتدا «ذخیره اطلاعات هنرجو» را بزنید.
+              </p>
+              <p id="issued-cert-link" class="hint" dir="ltr" hidden></p>
+              <div class="btn-row">
+                <button id="issue-left-qr-button" class="btn btn-primary" type="button" disabled>تولید QR اعتبار و ثبت گواهینامه</button>
+              </div>
             </div>
           </div>
 
           <div class="btn-row">
-            <button id="apply-button" class="btn btn-primary" type="submit">اعمال و ذخیره</button>
-            <button id="print-button" class="btn btn-secondary" type="button">چاپ</button>
-            <button id="png-button" class="btn btn-secondary" type="button">دانلود PNG</button>
-            <button id="pdf-button" class="btn btn-secondary" type="button">دانلود PDF</button>
-            <button id="reset-button" class="btn btn-ghost" type="button">بازگشت به پیش‌فرض</button>
+            <button id="apply-button" class="btn btn-primary" type="submit" data-i18n="btn.apply">اعمال و ذخیره</button>
+            <button id="print-button" class="btn btn-secondary" type="button" data-i18n="btn.print">چاپ</button>
+            <button id="png-button" class="btn btn-secondary" type="button" data-i18n="btn.png">دانلود PNG</button>
+            <button id="pdf-button" class="btn btn-secondary" type="button" data-i18n="btn.pdf">دانلود PDF</button>
+            <button id="reset-button" class="btn btn-ghost" type="button" data-i18n="btn.reset">بازگشت به پیش‌فرض</button>
           </div>
         </form>
 
         <p id="save-status" class="status" aria-live="polite"></p>
-        <div id="offline-badge" class="offline-badge">حالت آنلاین</div>
+        <div id="offline-badge" class="offline-badge" data-i18n="status.online">حالت آنلاین</div>
 
-        <label class="site-wm-toggle" title="لوگوی محو سایت پندنیک روی تمام گواهینامه‌ها">
+        <label class="site-wm-toggle" title="Pandenik watermark">
           <input id="site-watermark-enabled" type="checkbox" checked>
-          <span>لوگوی محو پندنیک در پس‌زمینه</span>
+          <span data-i18n="wm.toggle">لوگوی محو پندنیک در پس‌زمینه</span>
         </label>
       </aside>
 
@@ -479,6 +488,7 @@
   <script src="./vendor/html2canvas.min.js"></script>
   <script src="./vendor/jspdf.umd.min.js"></script>
   <script src="./js/themes.js"></script>
+  <script src="./js/ui-i18n.js"></script>
   <script src="./js/app.js"></script>
 </body>
 </html>
