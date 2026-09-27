@@ -305,6 +305,11 @@ button, input, textarea, select { font: inherit; }
   line-height: 1.45;
 }
 
+.theme-card-mono {
+  border-color: rgba(201, 162, 75, 0.4);
+  background: linear-gradient(90deg, rgba(201, 162, 75, 0.12), rgba(255, 255, 255, 0.03));
+}
+
 .field { margin-bottom: 0.85rem; }
 
 .field label {
@@ -603,27 +608,75 @@ button, input, textarea, select { font: inherit; }
   transform: scale(var(--certificate-scale, 1));
   overflow: hidden;
   color: var(--navy);
-  background: var(--navy);
+  background: transparent !important;
   box-shadow: 0 28px 48px rgba(0, 0, 0, 0.32);
 }
 
-.cert-frame {
-  position: absolute;
-  left: 18px;
-  top: 18px;
-  width: 1087px;
-  height: 758px;
-  background: var(--gold);
+/* لایه‌های قدیمی کاغذ/قاب — حذف‌شده از نمایش */
+.cert-frame,
+.cert-paper,
+.inner-border,
+.flourish,
+.theme-frame {
+  display: none !important;
 }
 
-.cert-paper {
+.theme-preview {
   position: absolute;
-  left: 23px;
-  top: 23px;
-  width: 1077px;
-  height: 748px;
-  background: radial-gradient(circle at 50% 34%, var(--paper-a) 0%, var(--paper-b) 58%, var(--paper-c) 100%);
-  overflow: hidden;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  display: block;
+  opacity: 1;
+  z-index: 0;
+  background: transparent !important;
+}
+
+.theme-preview.is-off {
+  display: none !important;
+}
+
+.theme-color-card .theme-primary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.85rem;
+  color: #c8d0dc;
+}
+
+.theme-color-card .theme-primary-row input[type="color"] {
+  width: 52px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.theme-color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.theme-color-presets button {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  padding: 0;
+}
+
+.theme-color-presets button:hover,
+.theme-color-presets button.is-active {
+  border-color: var(--gold);
+  transform: scale(1.08);
 }
 
 .watermark-image {
@@ -639,29 +692,16 @@ button, input, textarea, select { font: inherit; }
   filter: grayscale(0.1);
   display: none;
   z-index: 2 !important;
+  background: transparent !important;
 }
 
 .watermark-image.visible {
   display: block;
 }
 
-.site-watermark {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 420px;
-  height: 420px;
-  object-fit: contain;
-  opacity: 0.06;
-  pointer-events: none;
-  z-index: 1 !important;
-  background: transparent;
-}
-
-.site-watermark.hidden {
+.site-watermark,
+.site-wm-toggle {
   display: none !important;
-  opacity: 0 !important;
 }
 
 .ui-lang-field {
@@ -672,49 +712,25 @@ button, input, textarea, select { font: inherit; }
   margin-top: 0.35rem;
 }
 
-.final-issue-card {
-  margin-top: 1rem;
-  padding: 0.85rem 0.9rem;
-  border: 1px solid rgba(201, 162, 75, 0.35);
-  border-radius: 12px;
-  background: rgba(201, 162, 75, 0.08);
-}
-
-.site-wm-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.85rem;
-  padding: 0.4rem 0.55rem;
-  border-radius: 8px;
-  border: 1px solid rgba(201, 162, 75, 0.22);
-  background: rgba(255, 255, 255, 0.03);
-  color: #9aa3b5;
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.site-wm-toggle input {
-  width: 14px;
-  height: 14px;
-  accent-color: var(--gold);
-}
-
-.theme-frame {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  pointer-events: none;
-  z-index: 0;
-  display: block;
-  opacity: 1;
-}
-
-.theme-frame.is-off {
+.certificate-canvas.debug-template-only .certificate-title,
+.certificate-canvas.debug-template-only .cert-value,
+.certificate-canvas.debug-template-only .intro-text,
+.certificate-canvas.debug-template-only .duration-text,
+.certificate-canvas.debug-template-only .description,
+.certificate-canvas.debug-template-only .qr-notice,
+.certificate-canvas.debug-template-only .signature-caption,
+.certificate-canvas.debug-template-only .signature-line,
+.certificate-canvas.debug-template-only .divider,
+.certificate-canvas.debug-template-only .divider-diamond,
+.certificate-canvas.debug-template-only .qr-box,
+.certificate-canvas.debug-template-only .photo-wrap,
+.certificate-canvas.debug-template-only .logo-wrap,
+.certificate-canvas.debug-template-only .audit-footer,
+.certificate-canvas.debug-template-only .watermark-image,
+.certificate-canvas.debug-template-only #icons-layer {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .certificate-canvas > .certificate-title,
@@ -1464,6 +1480,7 @@ button, input, textarea, select { font: inherit; }
     position: relative !important;
     transform: none !important;
     box-shadow: none !important;
+    background: transparent !important;
   }
   .movable { cursor: default !important; outline: none !important; }
 }

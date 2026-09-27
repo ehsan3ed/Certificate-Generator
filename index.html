@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1c2b4a">
-  <meta name="description" content="سازنده گواهینامه — چندزبانه، RTL/LTR، لوگو و عکس">
-  <title>سازنده گواهینامه | Certificate Studio</title>
+  <meta name="description" content="Certificate builder — bilingual, RTL/LTR, logo and photos">
+  <title>Certificate Studio | Pandenik</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Great+Vibes&family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;700&family=Playfair+Display:wght@600;700&family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -24,12 +24,12 @@
         <div class="field ui-lang-field no-print">
           <label data-i18n="ui.langLabel">زبان رابط</label>
           <div class="chip-row compact" id="ui-lang-chips">
-            <button type="button" class="chip-btn active" data-ui-lang="fa">فارسی</button>
-            <button type="button" class="chip-btn" data-ui-lang="en">English</button>
+            <button type="button" class="chip-btn" data-ui-lang="fa">فارسی</button>
+            <button type="button" class="chip-btn active" data-ui-lang="en">English</button>
           </div>
           <select id="ui-lang" class="editor-input sr-only" aria-hidden="true">
+            <option value="en" selected>English</option>
             <option value="fa">فارسی</option>
-            <option value="en">English</option>
           </select>
         </div>
 
@@ -243,14 +243,27 @@
           </div>
 
           <div id="tab-style" class="tab-panel">
-            <p class="section-note">پس‌زمینه قاب، رنگ کاغذ و حاشیه را از اینجا تغییر دهید.</p>
+            <p class="section-note">رنگ یکدست قالب را عوض کنید؛ حاشیه و زمینه با هم هماهنگ می‌شوند.</p>
+            <div class="control-card theme-color-card">
+              <h3>رنگ یکدست قالب</h3>
+              <p class="hint">یک رنگ اصلی انتخاب کنید تا قاب، حاشیه و کاغذ هم‌رنگ شوند.</p>
+              <label class="theme-primary-row">
+                <span>رنگ اصلی</span>
+                <input id="color-theme-primary" type="color" value="#1c2b4a">
+              </label>
+              <div id="theme-color-presets" class="theme-color-presets" aria-label="پالت آماده"></div>
+              <div class="btn-row" style="margin-top:0.6rem">
+                <button id="apply-unified-color" class="btn btn-secondary" type="button">اعمال رنگ یکدست</button>
+                <button id="reset-theme-colors" class="btn btn-ghost" type="button">بازگشت به رنگ قالب</button>
+              </div>
+            </div>
             <div class="field">
               <label>پس‌زمینه‌های آماده</label>
               <div id="bg-presets" class="chip-row wrap"></div>
             </div>
             <div class="color-grid">
               <label>رنگ قاب بیرونی <input id="color-outer" type="color"></label>
-              <label>رنگ حاشیه طلایی <input id="color-frame" type="color"></label>
+              <label>رنگ حاشیه / تزئین <input id="color-frame" type="color"></label>
               <label>رنگ خط داخلی <input id="color-border" type="color"></label>
               <label>رنگ عنوان <input id="color-title" type="color"></label>
               <label>رنگ متن <input id="color-ink" type="color"></label>
@@ -344,12 +357,7 @@
         </form>
 
         <p id="save-status" class="status" aria-live="polite"></p>
-        <div id="offline-badge" class="offline-badge" data-i18n="status.online">حالت آنلاین</div>
-
-        <label class="site-wm-toggle" title="Pandenik watermark">
-          <input id="site-watermark-enabled" type="checkbox" checked>
-          <span data-i18n="wm.toggle">لوگوی محو پندنیک در پس‌زمینه</span>
-        </label>
+        <div id="offline-badge" class="offline-badge" data-i18n="status.online">Online</div>
       </aside>
 
       <section class="preview-wrap" aria-label="پیش‌نمایش گواهینامه">
@@ -384,14 +392,13 @@
             فایل تصویر را اینجا رها کنید<br>
             <small>لوگو / آیکون / عکس</small>
           </div>
-          <article id="certificate-canvas" class="certificate-canvas edit-mode" aria-label="Certificate preview" dir="ltr">
-            <div id="cert-frame" class="cert-frame"></div>
-            <div id="cert-paper" class="cert-paper">
-              <img id="site-watermark" class="site-watermark" src="./assets/pandenik-logo-transparent.png" alt="" aria-hidden="true">
-              <img id="watermark-image" class="watermark-image" alt="" aria-hidden="true">
-            </div>
-            <img id="theme-frame" class="theme-frame" alt="" aria-hidden="true">
-            <div id="inner-border" class="inner-border" aria-hidden="true"></div>
+          <article id="certificate-canvas" class="certificate-canvas edit-mode theme-art-on" aria-label="Certificate preview" dir="ltr">
+            <img id="theme-preview" class="theme-preview" alt="" aria-hidden="true">
+            <img id="watermark-image" class="watermark-image" alt="" aria-hidden="true">
+            <img id="theme-frame" class="theme-frame is-off" alt="" aria-hidden="true" hidden>
+            <div id="cert-frame" class="cert-frame" hidden aria-hidden="true"></div>
+            <div id="cert-paper" class="cert-paper" hidden aria-hidden="true"></div>
+            <div id="inner-border" class="inner-border" hidden aria-hidden="true"></div>
 
             <svg class="flourish tl" viewBox="0 0 100 100" aria-hidden="true">
               <path d="M8 83C16 51 39 58 45 30C48 15 60 9 82 8"></path>

@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "certificate-studio-v10";
+  const STORAGE_KEY = "certificate-studio-v28";
   const CERT_W = 1123;
   const CERT_H = 794;
   const QR_PLACEHOLDER = "./assets/qr-placeholder.png";
@@ -10,25 +10,25 @@
 
   const defaults = {
     themeId: "classic-navy",
-    uiLang: "fa",
-    language: "fa",
-    direction: "rtl",
-    fontPack: "persian-elegant",
-    title: CERT_LANGUAGES.fa.texts.title,
-    recipientName: "هنرجو یا کارآموز",
+    uiLang: "en",
+    language: "en",
+    direction: "ltr",
+    fontPack: "classic",
+    title: CERT_LANGUAGES.en.texts.title,
+    recipientName: "Trainee / Apprentice",
     recipientPhone: "",
-    courseDate: "تاریخ دوره",
-    courseName: "نام دوره",
-    duration: CERT_LANGUAGES.fa.texts.duration,
+    courseDate: "Course date",
+    courseName: "Course name",
+    duration: CERT_LANGUAGES.en.texts.duration,
     auditFooterDate: "",
     auditFooterNote: "",
-    instructorName: "مدرس",
-    institutionName: "آکادمی",
-    introText: CERT_LANGUAGES.fa.texts.introText,
-    descriptionOne: CERT_LANGUAGES.fa.texts.descriptionOne,
-    descriptionTwo: CERT_LANGUAGES.fa.texts.descriptionTwo,
-    qrNotice: CERT_LANGUAGES.fa.texts.qrNotice,
-    signatureCaption: CERT_LANGUAGES.fa.texts.signatureCaption,
+    instructorName: "Instructor",
+    institutionName: "Academy",
+    introText: CERT_LANGUAGES.en.texts.introText,
+    descriptionOne: CERT_LANGUAGES.en.texts.descriptionOne,
+    descriptionTwo: CERT_LANGUAGES.en.texts.descriptionTwo,
+    qrNotice: CERT_LANGUAGES.en.texts.qrNotice,
+    signatureCaption: CERT_LANGUAGES.en.texts.signatureCaption,
     qrLeftUrl: "",
     qrRightUrl: "",
     qrLeftFromPage: false,
@@ -49,8 +49,9 @@
     logo: { x: 516, y: 82, size: 90, zIndex: 10 },
     qrLeft: { x: 72, y: 620, size: 110, zIndex: 10 },
     qrRight: { x: 940, y: 620, size: 110, zIndex: 10 },
-    siteWatermarkEnabled: true,
     themeFrameEnabled: true,
+    themePrimary: "",
+    themeRecolorActive: false,
     watermarkEnabled: false,
     watermarkDataUrl: "",
     watermarkOpacity: 0.1,
@@ -58,11 +59,11 @@
     showFlourishes: false,
     studentPhotoEnabled: false,
     studentPhotoDataUrl: "",
-    studentPhotoCaption: CERT_LANGUAGES.fa.texts.studentPhotoCaption,
+    studentPhotoCaption: CERT_LANGUAGES.en.texts.studentPhotoCaption,
     studentPhoto: { x: 160, y: 300, size: 110, zIndex: 12 },
     instructorPhotoEnabled: false,
     instructorPhotoDataUrl: "",
-    instructorPhotoCaption: CERT_LANGUAGES.fa.texts.instructorPhotoCaption,
+    instructorPhotoCaption: CERT_LANGUAGES.en.texts.instructorPhotoCaption,
     instructorPhoto: { x: 850, y: 300, size: 110, zIndex: 12 },
     stackTop: 40,
     style: defaultStyle(),
@@ -80,9 +81,8 @@
     logoWrap: document.getElementById("logo-wrap"),
     logoImage: document.getElementById("logo-image"),
     watermark: document.getElementById("watermark-image"),
-    siteWatermark: document.getElementById("site-watermark"),
+    themePreview: document.getElementById("theme-preview"),
     themeFrame: document.getElementById("theme-frame"),
-    siteWatermarkEnabled: document.getElementById("site-watermark-enabled"),
     qrLeft: document.getElementById("qr-left"),
     qrRight: document.getElementById("qr-right"),
     iconsLayer: document.getElementById("icons-layer"),
@@ -172,8 +172,10 @@
       flourish: document.getElementById("color-flourish"),
       paperStart: document.getElementById("color-paper-start"),
       paperMid: document.getElementById("color-paper-mid"),
-      paperEnd: document.getElementById("color-paper-end")
+      paperEnd: document.getElementById("color-paper-end"),
+      themePrimary: document.getElementById("color-theme-primary")
     },
+    themeColorPresets: document.getElementById("theme-color-presets"),
     vals: {
       logoX: document.getElementById("logo-x-val"),
       logoY: document.getElementById("logo-y-val"),
@@ -570,7 +572,6 @@
     els.layout.watermarkEnabled.checked = !!state.watermarkEnabled;
     els.layout.watermarkOpacity.value = state.watermarkOpacity;
     els.layout.watermarkSize.value = state.watermarkSize;
-    if (els.siteWatermarkEnabled) els.siteWatermarkEnabled.checked = state.siteWatermarkEnabled !== false;
     els.layout.outerPad.value = s.outerPad;
     els.layout.framePad.value = s.framePad;
     els.layout.borderWidth.value = s.borderInnerWidth;
@@ -594,6 +595,9 @@
     els.colors.paperStart.value = s.paperStart;
     els.colors.paperMid.value = s.paperMid;
     els.colors.paperEnd.value = s.paperEnd;
+    if (els.colors.themePrimary) {
+      els.colors.themePrimary.value = state.themePrimary || s.outerBg || "#1c2b4a";
+    }
 
     const map = {
       logoX: state.logo.x,
@@ -657,7 +661,6 @@
     state.watermarkEnabled = els.layout.watermarkEnabled.checked;
     state.watermarkOpacity = Number(els.layout.watermarkOpacity.value);
     state.watermarkSize = Number(els.layout.watermarkSize.value);
-    if (els.siteWatermarkEnabled) state.siteWatermarkEnabled = els.siteWatermarkEnabled.checked;
     state.showFlourishes = els.layout.showFlourishes.checked;
     if (els.layout.themeFrameEnabled) state.themeFrameEnabled = els.layout.themeFrameEnabled.checked;
     state.studentPhotoEnabled = els.layout.studentPhotoEnabled.checked;
@@ -776,45 +779,36 @@
 
   function applyThemeVisuals() {
     const s = state.style;
-    const pad = s.outerPad;
-    const frame = s.framePad;
-    const paperLeft = pad + frame;
-    const paperTop = pad + frame;
-    const paperW = CERT_W - paperLeft * 2;
-    const paperH = CERT_H - paperTop * 2;
-    const innerInset = 28;
+    const themeArtOn = state.themeFrameEnabled !== false;
+    els.canvas.classList.toggle("theme-art-on", themeArtOn);
 
-    els.canvas.style.background = s.outerBg;
-    els.frame.style.left = `${pad}px`;
-    els.frame.style.top = `${pad}px`;
-    els.frame.style.width = `${CERT_W - pad * 2}px`;
-    els.frame.style.height = `${CERT_H - pad * 2}px`;
-    els.frame.style.background = s.frameColor;
+    // بدون لایه کاغذ/قاب رنگی — فقط تصویر قالب + متن
+    els.canvas.style.background = "transparent";
+    els.canvas.style.backgroundImage = "none";
+    els.canvas.style.backgroundColor = "transparent";
 
-    els.paper.style.left = `${paperLeft}px`;
-    els.paper.style.top = `${paperTop}px`;
-    els.paper.style.width = `${paperW}px`;
-    els.paper.style.height = `${paperH}px`;
-    els.paper.style.background = `radial-gradient(circle at 50% 34%, ${s.paperStart} 0%, ${s.paperMid} 58%, ${s.paperEnd} 100%)`;
+    if (els.frame) {
+      els.frame.style.display = "none";
+      els.frame.hidden = true;
+    }
+    if (els.paper) {
+      els.paper.style.display = "none";
+      els.paper.hidden = true;
+      els.paper.style.background = "transparent";
+    }
+    if (els.innerBorder) {
+      els.innerBorder.style.display = "none";
+      els.innerBorder.hidden = true;
+      els.innerBorder.style.opacity = "0";
+    }
 
-    els.innerBorder.style.left = `${paperLeft + innerInset}px`;
-    els.innerBorder.style.top = `${paperTop + innerInset}px`;
-    els.innerBorder.style.width = `${paperW - innerInset * 2}px`;
-    els.innerBorder.style.height = `${paperH - innerInset * 2}px`;
-    els.innerBorder.style.border = `${Math.max(1, s.borderInnerWidth)}px solid ${s.borderInnerColor}`;
-    els.innerBorder.style.boxShadow = `inset 0 0 0 1px ${s.borderInnerColor}55`;
-
-    // قاب طلایی پایدارتر و نزدیک‌تر به پیش‌نمایش تم
-    els.frame.style.boxShadow = `inset 0 0 0 ${Math.max(2, s.framePad)}px ${s.frameColor}`;
+    els.canvas.classList.add("hide-flourishes");
 
     document.querySelectorAll(".flourish").forEach((node) => {
+      node.style.display = "none";
       node.style.color = s.flourishColor;
     });
 
-    els.canvas.classList.toggle(
-      "hide-flourishes",
-      state.showFlourishes !== true || state.themeFrameEnabled !== false
-    );
     els.previews.title.style.color = s.titleColor;
     els.previews.recipientName.style.color = s.titleColor;
     els.previews.courseName.style.color = s.titleColor;
@@ -924,30 +918,194 @@
     }
   }
 
-  function renderThemeFrame() {
-    if (!els.themeFrame) return;
+  function hexToRgb(hex) {
+    const h = String(hex || "").replace("#", "");
+    if (h.length !== 6) return { r: 28, g: 43, b: 74 };
+    return {
+      r: parseInt(h.slice(0, 2), 16),
+      g: parseInt(h.slice(2, 4), 16),
+      b: parseInt(h.slice(4, 6), 16)
+    };
+  }
+
+  function rgbToHex(r, g, b) {
+    const c = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
+    return `#${c(r)}${c(g)}${c(b)}`;
+  }
+
+  function mixRgb(a, b, t) {
+    return {
+      r: a.r * (1 - t) + b.r * t,
+      g: a.g * (1 - t) + b.g * t,
+      b: a.b * (1 - t) + b.b * t
+    };
+  }
+
+  function shadeHex(hex, factor) {
+    const rgb = hexToRgb(hex);
+    if (factor >= 1) {
+      const t = Math.min(1, factor - 1);
+      const m = mixRgb(rgb, { r: 255, g: 255, b: 255 }, t);
+      return rgbToHex(m.r, m.g, m.b);
+    }
+    return rgbToHex(rgb.r * factor, rgb.g * factor, rgb.b * factor);
+  }
+
+  function buildUnifiedStyleFromPrimary(primary) {
+    const ink = shadeHex(primary, 0.5);
+    const deepInk = shadeHex(primary, 0.35);
+    return {
+      outerBg: primary,
+      frameColor: ink,
+      borderInnerColor: ink,
+      titleColor: ink,
+      inkColor: deepInk,
+      mutedColor: shadeHex(primary, 0.55),
+      courseDateColor: ink,
+      flourishColor: ink,
+      accent: ink,
+      qrBorderColor: ink,
+      signatureColor: ink,
+      paperStart: shadeHex(primary, 1.72),
+      paperMid: shadeHex(primary, 1.45),
+      paperEnd: shadeHex(primary, 1.28)
+    };
+  }
+
+  function applyUnifiedThemeColor(primary, { recolorArt = true } = {}) {
+    if (!primary) return;
+    state.themePrimary = primary;
+    state.themeRecolorActive = true;
+    Object.assign(state.style, buildUnifiedStyleFromPrimary(primary));
+    if (els.colors.themePrimary) els.colors.themePrimary.value = primary;
+    syncControlsFromState();
+    applyThemeVisuals();
+    const done = recolorArt ? recolorThemePreview(primary) : Promise.resolve();
+    return done.then(() => {
+      renderThemeColorPresets();
+      renderLogo();
+      renderQrVisibility();
+      renderPhotos();
+      saveLocal(false);
+      setStatus("رنگ یکدست روی قالب اعمال شد.");
+    });
+  }
+
+  function resetThemeColorsToTemplate() {
     const theme = CERT_THEMES.find((item) => item.id === state.themeId);
-    const src = theme?.frame || "";
-    const on = state.themeFrameEnabled !== false && !!src;
-    els.themeFrame.classList.toggle("is-off", !on);
-    if (!on) {
+    if (!theme) return;
+    state.themeRecolorActive = false;
+    state.themePrimary = theme.style.outerBg || "";
+    state.style = { ...state.style, ...structuredClone(theme.style) };
+    if (els.colors.themePrimary) els.colors.themePrimary.value = state.themePrimary || "#1c2b4a";
+    syncControlsFromState();
+    renderAll().then(() => {
+      saveLocal(false);
+      setStatus("رنگ‌ها به تنظیمات اصلی قالب برگشت.");
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  async function recolorThemePreview(primaryHex) {
+    if (!els.themePreview || !primaryHex) return;
+    const theme = CERT_THEMES.find((item) => item.id === state.themeId);
+    const baseSrc = theme?.preview || "";
+    if (!baseSrc) return;
+    try {
+      const img = await loadImage(baseSrc);
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      const target = hexToRgb(primaryHex);
+      const paper = mixRgb({ r: 255, g: 255, b: 255 }, target, 0.18);
+      const dark = mixRgb(target, { r: 0, g: 0, b: 0 }, 0.35);
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 8) continue;
+        const lum = (0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]) / 255;
+        let out;
+        if (lum > 0.72) out = mixRgb(paper, { r: 255, g: 255, b: 255 }, (lum - 0.72) / 0.28);
+        else if (lum > 0.4) out = mixRgb(target, paper, (lum - 0.4) / 0.32);
+        else out = mixRgb(dark, target, lum / 0.4);
+        data[i] = Math.round(out.r);
+        data[i + 1] = Math.round(out.g);
+        data[i + 2] = Math.round(out.b);
+      }
+      ctx.putImageData(imageData, 0, 0);
+      els.themePreview.src = canvas.toDataURL("image/png");
+      els.themePreview.dataset.recolored = "1";
+    } catch (err) {
+      console.warn("theme recolor failed", err);
+      els.themePreview.src = baseSrc;
+    }
+  }
+
+  function renderThemeFrame() {
+    const theme = CERT_THEMES.find((item) => item.id === state.themeId);
+    const on = state.themeFrameEnabled !== false;
+    const src = theme?.preview || theme?.frame || "";
+
+    if (els.themeFrame) {
+      els.themeFrame.classList.add("is-off");
+      els.themeFrame.hidden = true;
       els.themeFrame.removeAttribute("src");
       els.themeFrame.style.display = "none";
+    }
+
+    if (!els.themePreview) return;
+    const show = on && !!src;
+    els.themePreview.classList.toggle("is-off", !show);
+    els.themePreview.hidden = !show;
+    if (!show) {
+      els.themePreview.removeAttribute("src");
+      els.themePreview.style.display = "none";
       return;
     }
-    if (els.themeFrame.getAttribute("src") !== src) els.themeFrame.src = src;
-    els.themeFrame.style.display = "block";
+    els.themePreview.style.display = "block";
+    if (state.themeRecolorActive && state.themePrimary) {
+      recolorThemePreview(state.themePrimary);
+    } else if (els.themePreview.getAttribute("src") !== src) {
+      els.themePreview.src = src;
+      delete els.themePreview.dataset.recolored;
+    }
+  }
+
+  const THEME_COLOR_PRESETS = [
+    "#1c2b4a", "#0f3d2e", "#5c1a2e", "#1a5c5c", "#8a3d55",
+    "#1e3a5f", "#4a4538", "#4a3560", "#2c2a4a", "#5c3a22",
+    "#2d4a3e", "#2a2a2a", "#3a4a55", "#6b1423", "#133a5c"
+  ];
+
+  function renderThemeColorPresets() {
+    if (!els.themeColorPresets) return;
+    els.themeColorPresets.innerHTML = "";
+    THEME_COLOR_PRESETS.forEach((hex) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.title = hex;
+      btn.style.background = hex;
+      btn.classList.toggle("is-active", (state.themePrimary || "").toLowerCase() === hex.toLowerCase());
+      btn.addEventListener("click", () => {
+        applyUnifiedThemeColor(hex);
+      });
+      els.themeColorPresets.appendChild(btn);
+    });
   }
 
   function renderWatermarks() {
     renderThemeFrame();
-    if (els.siteWatermark) {
-      els.siteWatermark.src = SITE_LOGO;
-      const on = state.siteWatermarkEnabled !== false;
-      els.siteWatermark.classList.toggle("hidden", !on);
-      els.siteWatermark.style.opacity = on ? "0.06" : "0";
-      els.siteWatermark.style.display = on ? "block" : "none";
-    }
 
     const hasCustom = state.watermarkEnabled && !!state.watermarkDataUrl;
     els.watermark.classList.toggle("visible", hasCustom);
@@ -1111,17 +1269,30 @@
     renderAuditFooter(state);
   }
 
+  const THEME_CATEGORY_LABELS = {
+    medical: "پزشکی",
+    beauty: "زیبایی",
+    tech: "فناوری",
+    industrial: "صنعتی",
+    arts: "هنر",
+    business: "کسب‌وکار"
+  };
+
   function renderThemeGallery() {
     els.themeGallery.innerHTML = "";
     CERT_THEMES.forEach((theme) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = `theme-card${state.themeId === theme.id ? " active" : ""}`;
+      btn.className = `theme-card${state.themeId === theme.id ? " active" : ""}${theme.mono ? " theme-card-mono" : ""}`;
+      const cat = theme.category ? THEME_CATEGORY_LABELS[theme.category] || theme.category : "";
+      const meta = [theme.nameEn, theme.mono ? "یک‌دست" : null, cat, theme.preferredDir?.toUpperCase()]
+        .filter(Boolean)
+        .join(" · ");
       btn.innerHTML = `
         <img src="${theme.preview}" alt="${theme.nameEn}" loading="lazy">
         <div>
           <strong>${theme.name}</strong>
-          <span>${theme.nameEn} · ${theme.preferredDir.toUpperCase()} · ${CERT_LANGUAGES[theme.preferredLang]?.label || ""}</span>
+          <span>${meta}</span>
         </div>
       `;
       btn.addEventListener("click", () => applyTheme(theme.id));
@@ -1144,6 +1315,7 @@
     renderIconsOnCanvas();
     renderIconsList();
     renderThemeGallery();
+    renderThemeColorPresets();
     renderLanguageChips();
     renderDirectionChips();
     renderFontChips();
@@ -1203,6 +1375,18 @@
       if (banned.some((re) => re.test(String(merged.instructorName || "")))) {
         merged.instructorName = defaults.instructorName;
       }
+      const faPlaceholders = {
+        recipientName: new Set(["هنرجو", "هنرجو یا کارآموز"]),
+        instructorName: new Set(["مدرس"]),
+        institutionName: new Set(["آکادمی"]),
+        courseName: new Set(["نام دوره"]),
+        courseDate: new Set(["تاریخ دوره", "شهریور ۱۴۰۵"])
+      };
+      Object.keys(faPlaceholders).forEach((key) => {
+        if (faPlaceholders[key].has(String(merged[key] || "").trim())) {
+          merged[key] = defaults[key];
+        }
+      });
       if (merged.issuedCertCode && normalizePhoneClient(merged.recipientPhone || "")) {
         merged.recipientSavedInDb = true;
       }
@@ -1876,8 +2060,8 @@
     if (!pack) return;
     state.language = pack.id;
     state.direction = pack.dir;
+    const ui = state.uiLang === "en" ? "en" : "fa";
     const genericRecipients = new Set([
-      defaults.recipientName,
       "هنرجو",
       "هنرجو یا کارآموز",
       "Trainee / Apprentice",
@@ -1885,30 +2069,34 @@
       "المتدرب",
       "متدرب / متدرب مهني"
     ]);
-    const genericInstructors = new Set([
-      defaults.instructorName,
-      "مدرس",
-      "Instructor",
-      "المدرب"
-    ]);
+    const genericInstructors = new Set(["مدرس", "Instructor", "المدرب"]);
+    const genericInstitutions = new Set(["آکادمی", "Academy", "موسسه", "Institution"]);
+    const genericCourses = new Set(["نام دوره", "Course name", "عنوان دوره"]);
+    const genericDates = new Set(["تاریخ دوره", "Course date", "تاریخ"]);
     const names = keepNames
       ? {
           recipientName: genericRecipients.has(state.recipientName)
-            ? uiT(state.uiLang || "fa", "default.recipient")
+            ? uiT(ui, "default.recipient")
             : state.recipientName,
           instructorName: genericInstructors.has(state.instructorName)
-            ? uiT(state.uiLang || "fa", "default.instructor")
+            ? uiT(ui, "default.instructor")
             : state.instructorName,
-          institutionName: state.institutionName,
-          courseDate: state.courseDate,
-          courseName: state.courseName
+          institutionName: genericInstitutions.has(state.institutionName)
+            ? uiT(ui, "default.institution")
+            : state.institutionName,
+          courseDate: genericDates.has(state.courseDate)
+            ? uiT(ui, "default.courseDate")
+            : state.courseDate,
+          courseName: genericCourses.has(state.courseName)
+            ? uiT(ui, "default.course")
+            : state.courseName
         }
       : {
-          recipientName: uiT(state.uiLang || "fa", "default.recipient"),
-          instructorName: uiT(state.uiLang || "fa", "default.instructor"),
-          institutionName: uiT(state.uiLang || "fa", "default.institution"),
-          courseDate: uiT(state.uiLang || "fa", "default.courseDate"),
-          courseName: uiT(state.uiLang || "fa", "default.course")
+          recipientName: uiT(ui, "default.recipient"),
+          instructorName: uiT(ui, "default.instructor"),
+          institutionName: uiT(ui, "default.institution"),
+          courseDate: uiT(ui, "default.courseDate"),
+          courseName: uiT(ui, "default.course")
         };
     Object.assign(state, pack.texts, names);
     populateForm(state);
@@ -1923,6 +2111,8 @@
     const keepQrRight = state.qrRightVisible;
     state.themeId = theme.id;
     state.style = structuredClone(theme.style);
+    state.themeRecolorActive = false;
+    state.themePrimary = theme.style.outerBg || "";
     // ظاهر تم عوض می‌شود؛ وضعیت حذف‌شده‌ی لوگو/QR حفظ می‌ماند
     state.logoVisible = keepLogoVisible;
     state.logoDataUrl = keepLogoData;
@@ -2361,13 +2551,6 @@
     setStatus("تصویر پس‌زمینه حذف شد.");
   });
 
-  els.siteWatermarkEnabled?.addEventListener("change", () => {
-    state.siteWatermarkEnabled = els.siteWatermarkEnabled.checked;
-    renderWatermarks();
-    saveLocal(false);
-    setStatus(state.siteWatermarkEnabled ? "لوگوی محو پندنیک روشن شد." : "لوگوی محو پندنیک خاموش شد.");
-  });
-
   document.getElementById("student-photo-file").addEventListener("change", async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -2475,7 +2658,27 @@
   });
 
   Object.values(els.layout).forEach((input) => input.addEventListener("input", onControlChange));
-  Object.values(els.colors).forEach((input) => input.addEventListener("input", onControlChange));
+  Object.entries(els.colors).forEach(([key, input]) => {
+    if (!input) return;
+    if (key === "themePrimary") return;
+    input.addEventListener("input", onControlChange);
+  });
+
+  document.getElementById("apply-unified-color")?.addEventListener("click", () => {
+    const hex = els.colors.themePrimary?.value || state.themePrimary;
+    applyUnifiedThemeColor(hex);
+  });
+  document.getElementById("reset-theme-colors")?.addEventListener("click", () => {
+    resetThemeColorsToTemplate();
+  });
+  els.colors.themePrimary?.addEventListener("input", () => {
+    if (syncingControls) return;
+    applyUnifiedThemeColor(els.colors.themePrimary.value);
+  });
+  els.colors.themePrimary?.addEventListener("change", () => {
+    if (syncingControls) return;
+    applyUnifiedThemeColor(els.colors.themePrimary.value);
+  });
 
   document.getElementById("print-button").addEventListener("click", () => {
     if (!assertIssuedAuthenticityQr()) return;
@@ -2567,7 +2770,8 @@
 
   const saved = loadLocal();
   state = saved || structuredClone(defaults);
-  if (!state.uiLang) state.uiLang = "fa";
+  if (!state.uiLang) state.uiLang = "en";
+  if (!state.language) state.language = "en";
   populateForm(state);
   applyUiLanguage();
   updateOnlineBadge();

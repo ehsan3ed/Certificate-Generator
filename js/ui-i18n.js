@@ -60,7 +60,6 @@ const UI_I18N = {
     "final.cta": "ورود به pandenik.ir",
     "final.noteStandalone":
       "تا زمان صدور در پندنیک، QRهای نمونه روی پیش‌نمایش هستند و لینک واقعی ندارند.",
-    "wm.toggle": "لوگوی محو پندنیک در پس‌زمینه",
     "preview.kicker": "پیش‌نمایش زنده",
     "preview.meta": "المان‌ها را بکشید · تصویر را روی گواهینامه رها کنید",
     "quick.lang": "زبان گواهی",
@@ -140,7 +139,6 @@ const UI_I18N = {
     "final.cta": "Open pandenik.ir",
     "final.noteStandalone":
       "Until issued on Pandenik, preview QRs are samples and do not encode a live verify URL.",
-    "wm.toggle": "Pandenik watermark on background",
     "preview.kicker": "Live preview",
     "preview.meta": "Drag elements · drop images onto the certificate",
     "quick.lang": "Cert language",
